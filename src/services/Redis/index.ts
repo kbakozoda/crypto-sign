@@ -20,7 +20,8 @@ redisClient.on("error", (err) => {
 
 const RedisClient = {
     set: promisify(redisClient.set).bind(redisClient),
-    get: promisify(redisClient.get).bind(redisClient)
+    get: promisify(redisClient.get).bind(redisClient),
+    del: promisify(redisClient.del).bind(redisClient)
 };
 
 const RedisService = {
@@ -30,6 +31,10 @@ const RedisService = {
 
     async setKeyValueWithExpiration(key: string, value: string, expiresInSec: number): Promise<string> {
         return await RedisClient.set(key, value, "EX", expiresInSec);
+    },
+
+    async deleteKey(key: string): Promise<any> {
+        return await RedisClient.del(key);
     }
 };
 
