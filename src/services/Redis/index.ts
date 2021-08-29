@@ -1,5 +1,6 @@
 import * as redis from "redis";
 import config from "../../config/env/index";
+import { IRedisService } from "./interface";
 const { promisify } = require("util");
 
 console.log("Creating Redis client");
@@ -24,7 +25,7 @@ const RedisClient = {
     del: promisify(redisClient.del).bind(redisClient)
 };
 
-const RedisService = {
+const RedisService: IRedisService = {
     async getKey(key: string): Promise<string> {
         return await RedisClient.get(key);
     },
@@ -38,4 +39,4 @@ const RedisService = {
     }
 };
 
-export default RedisService; 
+export default RedisService;

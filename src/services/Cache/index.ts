@@ -1,4 +1,3 @@
-import { boolean } from "joi";
 import RedisService from "../Redis";
 import { ICacheService } from "./interface";
 

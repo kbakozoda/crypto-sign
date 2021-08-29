@@ -8,6 +8,7 @@ interface IConfig {
         host: string;
         port: number;
     };
+    synthesiaBase: string;
 }
 
 const NODE_ENV: string = process.env.NODE_ENV || 'development';
@@ -17,7 +18,8 @@ const development: IConfig = {
     redis: {
         host: process.env.REDIS_HOST || '127.0.0.1',
         port: +process.env.REDIS_PORT || 6379
-    }
+    },
+    synthesiaBase: process.env.SYNTHESIA_BASE
 };
 
 const production: IConfig = {
@@ -25,7 +27,8 @@ const production: IConfig = {
     redis: {
         host: process.env.REDIS_HOST || 'https://production_redis',
         port: +process.env.REDIS_PORT || 6379
-    }
+    },
+    synthesiaBase: process.env.SYNTHESIA_BASE
 };
 
 const config: {
