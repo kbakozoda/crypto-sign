@@ -1,10 +1,14 @@
 import { NextFunction, Request, Response } from 'express';
 import HttpError from '../../config/error';
+import CryptoService from './service';
 
 export async function sign(req: Request, res: Response, next: NextFunction): Promise < void > {
-    const message = req.query.message;
+    const message = req.query.message as string;
     const userId = req.header("userId");
     console.log(`New message sign request for ${message} from ${userId}`);
+
+    await CryptoService.signMessage(message);
+
     res.status(200).json({"result": "ok"});
 }
 
