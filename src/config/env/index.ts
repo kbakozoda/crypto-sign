@@ -9,6 +9,7 @@ interface IConfig {
         port: number;
     };
     synthesiaBase: string;
+    signatureCacheKeysTimeoutSec: number;
 }
 
 const NODE_ENV: string = process.env.NODE_ENV || 'development';
@@ -19,7 +20,8 @@ const development: IConfig = {
         host: process.env.REDIS_HOST || '127.0.0.1',
         port: +process.env.REDIS_PORT || 6379
     },
-    synthesiaBase: process.env.SYNTHESIA_BASE
+    synthesiaBase: process.env.SYNTHESIA_BASE,
+    signatureCacheKeysTimeoutSec: +process.env.SIGNATURE_CACHE_KEY_TIMEOUT_SEC || 240
 };
 
 const production: IConfig = {
@@ -28,7 +30,8 @@ const production: IConfig = {
         host: process.env.REDIS_HOST || 'https://production_redis',
         port: +process.env.REDIS_PORT || 6379
     },
-    synthesiaBase: process.env.SYNTHESIA_BASE
+    synthesiaBase: process.env.SYNTHESIA_BASE,
+    signatureCacheKeysTimeoutSec: +process.env.SIGNATURE_CACHE_KEY_TIMEOUT_SEC || 240
 };
 
 const config: {

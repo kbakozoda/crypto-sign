@@ -1,7 +1,6 @@
 import RedisService from "../Redis";
 import { ICacheService } from "./interface";
-
-const CACHE_KEYS_STORAGE_TIMEOUT_SECONDS = 120;
+import config from "../../config/env/index";
 
 export interface ICacheGetKeyResult {
     success: boolean,
@@ -26,7 +25,7 @@ const CacheService: ICacheService = {
 
     async setKeyValue(key: string, value: string): Promise<any> {
         console.log("CACHE: setting key & value", key, value);
-        return RedisService.setKeyValueWithExpiration(key, value, CACHE_KEYS_STORAGE_TIMEOUT_SECONDS);
+        return RedisService.setKeyValueWithExpiration(key, value, config.signatureCacheKeysTimeoutSec);
     },
 
     async invalidateKey(key: string): Promise<any> {
