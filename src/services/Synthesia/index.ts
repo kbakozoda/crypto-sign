@@ -47,10 +47,9 @@ const SynthesiaService: ISynthesiaService = {
 
             return result;
         } catch(err) {
-            console.log("SYNTHESIA: verification response status", err.response.status);
             console.log("SYNTHESIA: verification error:", err.response.data);
 
-            // NOTE: bug - in case of 429 we assume that the signature verification failed
+            // NOTE: possible bug - in case of 429 we assume that the signature verification failed
             const result: ISynthesiaActionResult = {
                 success: false
             };

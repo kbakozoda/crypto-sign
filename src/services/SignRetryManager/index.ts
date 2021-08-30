@@ -30,27 +30,29 @@ const SignRetryManager: ISignRetryManager = {
     async handleNextItemInQueue(): Promise<any> {
         const nextItem: IRetryQueueItem | boolean = await SignRetryManager.getAndPopNextItemFromQueue();
 
-        if (nextItem) {
-            console.log("Sign Retry Manager: handling next item", nextItem);
-            const nextItemTyped = nextItem as IRetryQueueItem;
-            try {
-                const signature = await CryptoService.signMessage(nextItemTyped.message, nextItemTyped.userId);
-                console.log("Sign Retry Manager: success, signature = ", signature);
-                SignRetryManager.notifyUserWebhook(nextItemTyped.webhook, signature);
-            } catch(err) {
-                console.log("Sign Retry Manager: item handle failed", err);
-            }
+        if (!nextItem) {
+            return;
+        }
+
+        console.log("Sign Retry Manager: handling next item", nextItem);
+        const nextItemTyped = nextItem as IRetryQueueItem;
+        try {
+            const signature = await CryptoService.signMessage(nextItemTyped.message, nextItemTyped.userId);
+            console.log("Sign Retry Manager: success, signature = ", signature);
+            SignRetryManager.notifyUserWebhook(nextItemTyped.webhook, signature);
+        } catch(err) {
+            console.log("Sign Retry Manager: item handle failed", err);
         }
     },
 
     async getAndPopNextItemFromQueue(): Promise<IRetryQueueItem | boolean> {
         const nextItem = await RedisService.getNextItemFromQueue(QUEUE_NAME);
-        if (nextItem) {
-            await RedisService.popNextItemFromQueue(QUEUE_NAME);
-            return nextItem;
+        if (!nextItem) {
+            return false;
         }
 
-        return false;
+        await RedisService.popNextItemFromQueue(QUEUE_NAME);
+        return nextItem;
     },
 
     async notifyUserWebhook(webhook: string, signature: string): Promise<any> {
