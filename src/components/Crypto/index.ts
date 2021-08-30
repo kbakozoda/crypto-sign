@@ -8,6 +8,10 @@ export async function sign(req: Request, res: Response, next: NextFunction): Pro
     const userId = req.header("userId");
     console.log(`New message sign request for ${message} from ${userId}`);
 
+    if (!message) {
+        return next(new HttpError(400, "Please send the message in url params"));
+    }
+
     const signature = await CryptoService.signMessage(message, userId);
 
     res.status(200).json({"signature": signature});

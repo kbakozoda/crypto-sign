@@ -8,34 +8,38 @@ import { ICryptoService } from "./interface";
 const CryptoService: ICryptoService = {
     async signMessage(message: string, userId: string): Promise<any> {
         console.log("New attempt to sign a message, checking the cache", message);
-        const cacheGetKeyResult: ICacheGetKeyResult = await CacheService.getValue(message); 
+        const getMessageSignatureInCacheResult: ICacheGetKeyResult = await CacheService.getValue(message); 
         let signVerificationResult: ISynthesiaActionResult;
 
-        if (cacheGetKeyResult.success) {
-            console.log("Value is in cache =", cacheGetKeyResult.value);
+        if (getMessageSignatureInCacheResult.success) {
+            console.log("Value is in cache =", getMessageSignatureInCacheResult.value);
             console.log("Verifying the fetched value");
-            signVerificationResult = await SynthesiaService.verifySignature(message, cacheGetKeyResult.value);
+            signVerificationResult = await SynthesiaService.verifySignature(message, getMessageSignatureInCacheResult.value);
 
             if (!signVerificationResult.success) {
                 await CacheService.invalidateKey(message);
             } else {
-                return cacheGetKeyResult.value;
+                return getMessageSignatureInCacheResult.value;
             }
         }
 
-        if (!cacheGetKeyResult.success || !signVerificationResult.success) {
-            console.log("Getting the signature for", message);
-            const result: ISynthesiaActionResult = await SynthesiaService.getSignature(message);
+        if (!getMessageSignatureInCacheResult.success || !signVerificationResult.success) {
+            return await CryptoService.getMessageSignatureForUser(message, userId);
+        }
+    },
 
-            if (result.success) {
-                console.log("Success");
-                await CacheService.setKeyValue(message, result.data);
-                return result.data;
-            } else {
-                console.log("Could not sign a message");
-                await CryptoService.passFailedMessageToRetryManager(message, userId);
-                throw new HttpError(418, "Retry later");
-            }
+    async getMessageSignatureForUser(message: string, userId: string): Promise<string> {
+        console.log("Getting the signature for", message);
+        const result: ISynthesiaActionResult = await SynthesiaService.getSignature(message);
+
+        if (result.success) {
+            console.log("Success");
+            await CacheService.setKeyValue(message, result.data);
+            return result.data;
+        } else {
+            console.log("Could not sign a message");
+            await CryptoService.passFailedMessageToRetryManager(message, userId);
+            throw new HttpError(418, "Retry later or wait for a result on your webhook.");
         }
     },
 
@@ -46,6 +50,11 @@ const CryptoService: ICryptoService = {
         } catch(err) {
             console.log("could not get webhook for user", userId);
             console.log(err);
+        }
+
+        if (!userId) {
+            console.log("UserId not specified, will not add to retry queue.");
+            return;
         }
 
         const itemForQueue: IRetryQueueItem = {
