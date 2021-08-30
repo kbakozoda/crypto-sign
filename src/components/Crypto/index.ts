@@ -7,9 +7,9 @@ export async function sign(req: Request, res: Response, next: NextFunction): Pro
     const userId = req.header("userId");
     console.log(`New message sign request for ${message} from ${userId}`);
 
-    await CryptoService.signMessage(message);
+    const signature = await CryptoService.signMessage(message);
 
-    res.status(200).json({"result": "ok"});
+    res.status(200).json({"signature": signature});
 }
 
 export async function setWebhook(req: Request, res: Response, next: NextFunction): Promise < void > {

@@ -1,3 +1,3 @@
 export interface ICryptoService {
-    signMessage(message: string): Promise<void>;
+    signMessage(message: string): Promise<any>;
 };
