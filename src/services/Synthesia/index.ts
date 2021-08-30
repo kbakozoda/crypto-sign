@@ -6,7 +6,7 @@ const REQUEST_TIMEOUT_MS = 1500;
 const REQUEST_OPTIONS = {
     timeout: REQUEST_TIMEOUT_MS,
     headers: {
-        "Authorization": "6e283f4c54309ccd008f87e478ad7553"
+        "Authorization": config.synthesiaAuthToken
     }
 };
 

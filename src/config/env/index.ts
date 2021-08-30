@@ -9,6 +9,7 @@ interface IConfig {
         port: number;
     };
     synthesiaBase: string;
+    synthesiaAuthToken: string;
     signatureCacheKeysTimeoutSec: number;
 }
 
@@ -21,6 +22,7 @@ const development: IConfig = {
         port: +process.env.REDIS_PORT || 6379
     },
     synthesiaBase: process.env.SYNTHESIA_BASE,
+    synthesiaAuthToken: process.env.SYNTHESIA_AUTH_TOKEN,
     signatureCacheKeysTimeoutSec: +process.env.SIGNATURE_CACHE_KEY_TIMEOUT_SEC || 240
 };
 
@@ -31,6 +33,7 @@ const production: IConfig = {
         port: +process.env.REDIS_PORT || 6379
     },
     synthesiaBase: process.env.SYNTHESIA_BASE,
+    synthesiaAuthToken: process.env.SYNTHESIA_AUTH_TOKEN,
     signatureCacheKeysTimeoutSec: +process.env.SIGNATURE_CACHE_KEY_TIMEOUT_SEC || 240
 };
 
