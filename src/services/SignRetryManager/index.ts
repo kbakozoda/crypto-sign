@@ -32,11 +32,11 @@ const SignRetryManager: ISignRetryManager = {
 
         if (nextItem) {
             console.log("Sign Retry Manager: handling next item", nextItem);
-
+            const nextItemTyped = nextItem as IRetryQueueItem;
             try {
-                const signature = await CryptoService.signMessage((nextItem as IRetryQueueItem).message);
+                const signature = await CryptoService.signMessage(nextItemTyped.message, nextItemTyped.userId);
                 console.log("Sign Retry Manager: success, signature = ", signature);
-                SignRetryManager.notifyUserWebhook((nextItem as IRetryQueueItem).webhook, signature);
+                SignRetryManager.notifyUserWebhook(nextItemTyped.webhook, signature);
             } catch(err) {
                 console.log("Sign Retry Manager: item handle failed", err);
             }
@@ -54,8 +54,13 @@ const SignRetryManager: ISignRetryManager = {
     },
 
     async notifyUserWebhook(webhook: string, signature: string): Promise<any> {
+        if (!webhook) {
+            console.log("No webhook is specified, notification will not be sent.");
+            return;
+        }
+
         console.log("Sending notification to webhook", webhook);
-        NotificationService.sendNotification(webhook, { signature });
+        await NotificationService.sendNotification(webhook, { signature });
     }
 };
 
