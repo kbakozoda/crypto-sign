@@ -1,3 +1,4 @@
 export interface ICryptoService {
-    signMessage(message: string): Promise<any>;
+    signMessage(message: string, userId: string): Promise<any>;
+    passFailedMessageToRetryManager(message: string, userId: string): Promise<any>;
 };
