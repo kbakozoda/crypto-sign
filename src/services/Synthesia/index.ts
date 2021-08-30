@@ -9,7 +9,6 @@ const REQUEST_OPTIONS = {
         "Authorization": "6e283f4c54309ccd008f87e478ad7553"
     }
 };
-// error code 418
 
 export interface ISynthesiaActionResult {
     success: boolean;
@@ -51,7 +50,7 @@ const SynthesiaService: ISynthesiaService = {
             console.log("SYNTHESIA: verification response status", err.response.status);
             console.log("SYNTHESIA: verification error:", err.response.data);
 
-            // NOTE: bug - event in case of 429 we assume that the signature is incorrect
+            // NOTE: bug - in case of 429 we assume that the signature verification failed
             const result: ISynthesiaActionResult = {
                 success: false
             };
